@@ -18,7 +18,7 @@ struct RegisterResponse: Codable {
 }
 
 class AccountService {
-    private let baseURL = "https://your-vercel-project-url/api"
+    private let baseURL = "https://meally-3oztxoalm-mikaellas-projects-19988d2b.vercel.app"
     
     func registerAccount(username: String, password: String, completion: @escaping (Result<RegisterResponse, Error>) -> Void) {
         let url = URL(string: "\(baseURL)/register")!
