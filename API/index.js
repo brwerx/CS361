@@ -33,11 +33,16 @@ app.post('/register', async (req, res) => {
 app.post('/favorites', async (req, res) => {
     const { userId, label, image, source, url, ingredients, calories } = req.body;
     try {
+        // Check if the recipe already exists for the user
+        const existingRecipe = await Recipe.findOne({ userId, label });
+        if (existingRecipe) {
+            return res.status(400).json({ success: false, message: 'Recipe already exists in favorites' });
+        }
         const recipe = new Recipe({ userId, label, image, source, url, ingredients, calories });
         await recipe.save();
-        res.status(201).json({ message: 'Recipe saved successfully' });
+        res.status(201).json({ success: true, message: 'Recipe saved successfully' });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ success: false, message: err.message });
     }
 });
 
@@ -48,9 +53,10 @@ app.get('/favorites', async (req, res) => {
         const recipes = await Recipe.find({ userId });
         res.status(200).json(recipes);
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ success: false, message: err.message });
     }
 });
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
