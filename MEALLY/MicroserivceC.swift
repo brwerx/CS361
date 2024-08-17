@@ -8,7 +8,13 @@
 import Foundation
 
 struct SaveFavoriteRequest: Codable {
-    let recipeId: String
+    let userId: String
+    let label: String
+    let image: String
+    let source: String
+    let url: String
+    let ingredients: [String]?
+    let calories: Double?
 }
 
 struct FavoriteResponse: Codable {
@@ -18,16 +24,24 @@ struct FavoriteResponse: Codable {
 
 class FavoritesService {
     private let baseURL = "https://meally-3oztxoalm-mikaellas-projects-19988d2b.vercel.app"
-    
-    func saveFavorite(recipeId: String, completion: @escaping (Result<FavoriteResponse, Error>) -> Void) {
+
+    func saveFavorite(userId: String, recipe: Recipe, completion: @escaping (Result<FavoriteResponse, Error>) -> Void) {
         let url = URL(string: "\(baseURL)/favorites")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let body = SaveFavoriteRequest(recipeId: recipeId)
+
+        let body = SaveFavoriteRequest(
+            userId: userId,
+            label: recipe.label,
+            image: recipe.image,
+            source: recipe.source,
+            url: recipe.url,
+            ingredients: recipe.ingredientLines,
+            calories: recipe.calories
+        )
         request.httpBody = try? JSONEncoder().encode(body)
-        
+
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
@@ -45,11 +59,11 @@ class FavoritesService {
             }
         }.resume()
     }
-    
-    func fetchFavorites(completion: @escaping (Result<[Recipe], Error>) -> Void) {
-        let url = URL(string: "\(baseURL)/favorites")!
+
+    func fetchFavorites(userId: String, completion: @escaping (Result<[Recipe], Error>) -> Void) {
+        let url = URL(string: "\(baseURL)/favorites?userId=\(userId)")!
         let request = URLRequest(url: url)
-        
+
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
