@@ -17,7 +17,7 @@ struct FavoriteResponse: Codable {
 }
 
 class FavoritesService {
-    private let baseURL = "https://your-vercel-project-url/api"
+    private let baseURL = "https://meally-3oztxoalm-mikaellas-projects-19988d2b.vercel.app"
     
     func saveFavorite(recipeId: String, completion: @escaping (Result<FavoriteResponse, Error>) -> Void) {
         let url = URL(string: "\(baseURL)/favorites")!
