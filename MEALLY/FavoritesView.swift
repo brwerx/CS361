@@ -13,6 +13,7 @@ struct FavoritesView: View {
     @State private var favoriteRecipes: [Recipe] = []
     
     private let favoritesService = FavoritesService()
+    private let userId = "yourUserId" // Replace with the actual user ID
     
     var filteredFavorites: [Recipe] {
         if searchText.isEmpty {
@@ -54,7 +55,7 @@ struct FavoritesView: View {
     }
     
     private func fetchFavorites() {
-        favoritesService.fetchFavorites { result in
+        favoritesService.fetchFavorites(userId: userId) { result in
             switch result {
             case .success(let recipes):
                 DispatchQueue.main.async {
